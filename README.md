@@ -2,18 +2,18 @@
 
 inicio de sesion y registro
 
-##Install bower
+## Install bower
 
 Make sure bower is installed in your machine, on the contrary install it using the following command
 
 ```
-npm i -g bower
+$ npm i -g bower
 ```
 
-##Install your bower dependencies
+## Install your bower dependencies
 
 ```
-bower install
+$ bower install
 ```
 
 ## Install the Polymer-CLI
