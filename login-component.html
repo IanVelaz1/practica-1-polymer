@@ -1,0 +1,141 @@
+<link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="../paper-input/paper-input.html">
+<link rel="import" href="../paper-button/paper-button.html">
+<link rel="import" href="../polymer/lib/elements/dom-if.html">
+
+<dom-module id="login-component">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+      .error{
+        color: red;
+        font-size: 110%;
+      }
+    </style>
+    <template is="dom-if" if={{!visibleRegister}}>
+      <h3>Iniciar sesion</h3>
+      <h5>No tienes cuenta con nosotros <paper-button on-tap="visibleRegisterForm">Registrate</paper-button></h5>
+      <paper-input label="E-mail" value="{{mail}}" type="text"></paper-input>
+      <paper-input label="contraseña" value="{{password}}" type="password"></paper-input>
+      <paper-button on-tap="logIn">Iniciar sesion</paper-button>
+        <template is="dom-if" if="{{mailNotFound}}">
+        <p class="error">Mail no encontrado</p>
+        </template>
+        <template is="dom-if" if="{{wrongPassword}}">
+          <p class="error">contraseña incorrecta</p>
+        </template>
+    </template>
+    
+    <template is="dom-if" if={{visibleRegister}}>
+      <h3>Registrarse</h3>
+      <h5>tienes cuenta con nosotros?<paper-button on-tap="visibleRegisterForm">Iniciar sesion</paper-button></h5>
+      <paper-input label="nombre" value="{{name}}" type="text"></paper-input>
+      <paper-input label="mail" value="{{mail}}" type="text"></paper-input>
+      <paper-input label="direccion" value="{{address}}" type="text"></paper-input>
+      <paper-input label="telefono" value="{{phone}}" type="text"></paper-input>
+      <paper-input label="contraseña" value="{{password}}" type="password"></paper-input>
+      <paper-input label="repetir contraseña" value="{{mockPassword}}" type="password"></paper-input>
+      <paper-button on-tap="registerUser">Registrarse</paper-button>
+      <template is="dom-if" if="{{wrongPassword}}">
+          <p class="error">las contraseñas no son iguales</p>
+        </template>
+    </template>
+  </template>
+
+  <script>
+    /**
+     * `login-component`
+     * inicio de sesion y registro
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/index.html
+     */
+    class LoginComponent extends Polymer.Element {
+      static get is() { return 'login-component'; }
+      static get properties() {
+        return {
+          name:{
+            type:String,
+            value:""
+          },
+          mail:{
+            type:String,
+            value:""
+          },
+          address:{
+            type:String,
+            value:""
+          },
+          phone:{
+            type:String,
+            value:""
+          },
+          password:{
+            type:String,
+            value:""
+          },
+          mockPassword:{
+            type:String,
+            value:""
+          },
+          visibleRegister:{
+            type:Boolean,
+            value:false
+          },
+          fakeUsers:{
+            type:Array,
+            value(){
+              return [
+                {name:"Ian",password:"1234",address:"calle cool",phone:"777123321",mail:"mail@mail.com"},
+                {name:"Edu",password:"34554",address:"calle cool123",phone:"2564365",mail:"mail@prueba.com"}
+              ]
+            }
+          },
+          mailNotFound:{
+            type:Boolean,
+            value:false
+          },
+          wrongPassword:{
+            type:Boolean,
+            value:false
+          }
+        };
+      }
+      
+      logIn(event){
+        let indexUser=this.fakeUsers.findIndex(user=>user.mail==this.mail);
+        if(indexUser==-1){
+          this.mailNotFound=true;
+        }else{
+          this.mailNotFound=false;
+          let userFound=this.fakeUsers[indexUser];
+          if(this.password!=userFound.password){            
+            this.wrongPassword=true;
+          }else{
+            this.wrongPassword=false;
+            alert(`has iniciado sesion ${userFound.mail}`)
+          }
+        }
+      }
+
+      visibleRegisterForm(){
+        this.visibleRegister=!this.visibleRegister;
+      }
+
+      registerUser(){
+        if(this.password==this.mockPassword){
+          this.wrongPassword=false;
+          alert(`usuario creado ${this.mail}`)
+        }else{
+          this.wrongPassword=true;
+        }
+      }
+
+    }
+
+    window.customElements.define(LoginComponent.is, LoginComponent);
+  </script>
+</dom-module>
