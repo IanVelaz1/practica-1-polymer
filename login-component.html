@@ -15,11 +15,11 @@
       }
     </style>
     <template is="dom-if" if={{!visibleRegister}}>
-      <h3>Iniciar sesion</h3>
-      <h5>No tienes cuenta con nosotros <paper-button on-tap="visibleRegisterForm">Registrate</paper-button></h5>
-      <paper-input label="E-mail" value="{{mail}}" type="text"></paper-input>
-      <paper-input label="contraseña" value="{{password}}" type="password"></paper-input>
-      <paper-button on-tap="logIn">Iniciar sesion</paper-button>
+      <h3>[[language.logIn.title]]</h3>
+      <h5>[[language.logIn.noAccountText]] <paper-button on-tap="visibleRegisterForm">[[language.logIn.noAccountBtn]]</paper-button></h5>
+      <paper-input label="[[language.logIn.mailLabel]]" value="{{mail}}" type="text"></paper-input>
+      <paper-input label="[[language.logIn.passwordLabel]]" value="{{password}}" type="password"></paper-input>
+      <paper-button on-tap="logIn">[[language.logIn.logInButton]]</paper-button>
         <template is="dom-if" if="{{mailNotFound}}">
         <p class="error">Mail no encontrado</p>
         </template>
@@ -29,18 +29,17 @@
     </template>
     
     <template is="dom-if" if={{visibleRegister}}>
-      <h3>Registrarse</h3>
-      <h5>tienes cuenta con nosotros?<paper-button on-tap="visibleRegisterForm">Iniciar sesion</paper-button></h5>
-      <paper-input label="nombre" value="{{name}}" type="text"></paper-input>
-      <paper-input label="mail" value="{{mail}}" type="text"></paper-input>
-      <paper-input label="direccion" value="{{address}}" type="text"></paper-input>
-      <paper-input label="telefono" value="{{phone}}" type="text"></paper-input>
-      <paper-input label="contraseña" value="{{password}}" type="password"></paper-input>
-      <paper-input label="repetir contraseña" value="{{mockPassword}}" type="password"></paper-input>
-      <paper-button on-tap="registerUser">Registrarse</paper-button>
-      <template is="dom-if" if="{{wrongPassword}}">
-          <p class="error">las contraseñas no son iguales</p>
-        </template>
+      <h3>[[language.signIn.title]]</h3>
+      <h5>[[language.signIn.withAccountText]]<paper-button on-tap="visibleRegisterForm">[[language.signIn.withAccountBtn]]</paper-button></h5>
+      <paper-input label="[[language.signIn.nameLabel]]" value="{{name}}" type="text"></paper-input>
+      <paper-input label="[[language.signIn.mailLabel]]" value="{{mail}}" type="text"></paper-input>
+      <paper-input label="[[language.signIn.addressLabel]]" value="{{address}}" type="text"></paper-input>
+      <paper-input label="[[language.signIn.phoneLabel]]" value="{{phone}}" type="text"></paper-input>
+      <paper-input label="[[language.signIn.passwordLabel]]" value="{{password}}" type="password"></paper-input>
+      <paper-input label="[[language.signIn.repeatPasswordLabel]]" value="{{mockPassword}}" type="password"></paper-input>
+      <paper-input label="[[language.signIn.imageUrlLabel]]" value="{{imageUrl}}" type="text"></paper-input>
+      <paper-button on-tap="registerUser">[[language.signIn.registerBtn]]</paper-button>
+      
     </template>
   </template>
 
@@ -85,41 +84,39 @@
             type:Boolean,
             value:false
           },
-          fakeUsers:{
+          imageUrl:{
+              type:String,
+              value:""
+          },
+          userList:{
             type:Array,
             value(){
               return [
-                {name:"Ian",password:"1234",address:"calle cool",phone:"777123321",mail:"mail@mail.com"},
-                {name:"Edu",password:"34554",address:"calle cool123",phone:"2564365",mail:"mail@prueba.com"}
+                
               ]
             }
-          },
-          mailNotFound:{
-            type:Boolean,
-            value:false
-          },
-          wrongPassword:{
-            type:Boolean,
-            value:false
+          },language:{
+            type:Object,
+            value:{}
           }
         };
       }
       
       ///login methods and validations
       logIn(event){
-        let indexUser=this.fakeUsers.findIndex(user=>user.mail==this.mail);
-        if(indexUser==-1){
-          this.mailNotFound=true;
-        }else{
-          this.mailNotFound=false;
-          let userFound=this.fakeUsers[indexUser];
-          if(this.password!=userFound.password){            
-            this.wrongPassword=true;
-          }else{
-            this.wrongPassword=false;
-            alert(`has iniciado sesion ${userFound.mail}`)
-          }
+        
+        let logInObject={
+          mail:this.mail,
+          password:this.password
         }
+
+        this.dispatchEvent(new CustomEvent("user-login",{
+           bubbles:false,
+           composed:false,
+           detail:logInObject
+        }));
+
+        
       }
 
       visibleRegisterForm(){
@@ -128,8 +125,20 @@
 
       registerUser(){
         if(this.password==this.mockPassword){
+          let userObject={
+            name:this.name, 
+            mail:this.mail,
+            address:this.address,
+            phone:this.phone,
+            password:this.password,
+            imageUrl:this.imageUrl
+          }
           this.wrongPassword=false;
-          alert(`usuario creado ${this.mail}`)
+          this.dispatchEvent(new CustomEvent("registro-usuario",{
+            bubbles:false,
+            composed:false,
+            detail:userObject
+          }))
         }else{
           this.wrongPassword=true;
         }
