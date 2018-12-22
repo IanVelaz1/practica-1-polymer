@@ -16,11 +16,11 @@
     "polymer": "^2.0.0"
   },
   "homepage": "https://github.com/jusolete/practica-1-polymer",
-  "_release": "c4219e0b54",
+  "_release": "617b0d3a07",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "c4219e0b5493e87676b43a81a5089ec6a12357d3"
+    "commit": "617b0d3a0740313c8b6480041c492be484f24322"
   },
   "_source": "https://github.com/jusolete/practica-1-polymer.git",
   "_target": "*",
